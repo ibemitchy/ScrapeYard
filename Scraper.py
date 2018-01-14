@@ -1,4 +1,7 @@
+from Article import Article
+from bs4 import BeautifulSoup
 import re
+import requests
 
 
 class Scraper:
@@ -15,9 +18,8 @@ class Scraper:
 
     def start(self):
         self.__clean_urls()
-        print(self.__urls)
-
-        return 1
+        while self.__urls:
+            Scraper.scrape(self.__urls.pop())
 
     def __clean_urls(self):
         """
@@ -31,5 +33,29 @@ class Scraper:
         self.__urls = [url[:url.find(".html") + 5] for url in self.__urls]
 
         # remove non-article URLs
-        pattern = re.compile(self.__nyc_reg)
+        pattern = re.compile(self.__nyc_regex)
         self.__urls = [url for url in self.__urls if pattern.match(url)]
+
+    @staticmethod
+    def scrape(url):
+        try:
+            data = requests.get(url)
+        except requests.exceptions.RequestException as e:
+            print(e)
+            return
+
+        soup = BeautifulSoup(data.text, "html.parser")
+        author = soup.find("span", {"class": "byline-author"}).getText()
+        content = ""
+        date = Scraper.clean_date(soup.find("time", {"class": "dateline"}).get("datetime"))
+        title = soup.find("h1", {"id": "headline"}).getText()
+
+        for para in soup.findAll("p", {"class": "story-content"}):
+            content += para.getText()
+
+        article = Article(author, content, date, title)
+        print(article.to_string())
+
+    @staticmethod
+    def clean_date(date):
+        return date[:date.find("T")]
