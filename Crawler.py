@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from collections import deque
 import requests
+import time
 
 
 class Crawler:
@@ -27,6 +28,7 @@ class Crawler:
         Main dispatcher of URLs
         """
 
+        # start_time = time.time()
         while self.__visited_pages < self.__max_pages:
             if len(self.__url_queue) == 0:
                 print("Crawling stopped after URL list is exhausted")
@@ -37,11 +39,13 @@ class Crawler:
 
             if url not in self.__visited_url:
                 self.__crawl(url)
+        # print(time.time() - start_time)
 
     def __crawl(self, url):
         """
         Appends new urls from the web page using class attributes suitable for NYTs. Add tags and attributes here to
         generalize the crawler for other sites.
+
         :type url: str
         """
         try:
@@ -52,6 +56,7 @@ class Crawler:
 
         self.__visited_pages += 1
         self.__visited_url.add(url)
+        print(url)
         soup = BeautifulSoup(data.text, "html.parser")
 
         # this is (presumably) only in the main page
@@ -65,4 +70,3 @@ class Crawler:
 
     def get_urls(self):
         return self.__visited_url
-
