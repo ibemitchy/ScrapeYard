@@ -19,16 +19,16 @@ I should've used different websites in case New York Times had a limit for a sin
 * Asynchronous: 8.674529075622559 seconds
 
 #### Scraper (CPU: i7 5820k) ####
-I started by crawling and caching 50 HTML pages. I then duplicated the HTML pages until I had 4896 pages total. These acted as the input files for the scrapers. "Single process" corresponds with Scraper.py and Multiprocess (n) means I'm running MultiprocessScraper.py with n processes.
+I started by crawling and caching 50 HTML pages. I then duplicated the HTML pages until I had 4896 pages total. These acted as the input files for the scrapers. "Single process" corresponds with scraper.py and Multiprocess (n) means I'm running multiprocess_scraper.py with n processes.
 
 Let's first run these on my hard drive.
-* Hard drive: SATA Barracuda (5400 RPM)
+##### Hard drive: SATA Barracuda (5400 RPM) #####
 * Single process:   201.32148241996765 seconds
 * Multiprocess (1): 199.33292937278748 seconds
 * Multiprocess (6): 38.622724533081055 seconds
 
 I was curious if those extra $$$ for my $olid$tate$ drive was worth it.
-* Solid state drive: Samsung 850 PRO 256GB
+##### Solid state drive: Samsung 850 PRO 256GB #####
 * Single process:   186.32595300674438 seconds
 * Multiprocess (1): 188.27208900451660 seconds
 * Multiprocess (6): 37.963175296783450 seconds
@@ -36,17 +36,18 @@ I was curious if those extra $$$ for my $olid$tate$ drive was worth it.
 Huh? While the performance gain from increasing the number of processes was expected, I was quite surprised by how close the hard drive (HD) and solid state drive (SSD) results were. I was absolutely certain that the SSD would wipe the floor with the HD. My guess is that the amount of time the CPU took up due to parsing the HTMLs with BeautifulSoup was much greater than the time for the HD/SSD to write the parsed files.
 
 #### Storage Tests: HD vs SSD ####
-I removed all parsing functions and have set up the code so that each process will only do a file copy from one directory to another. This was to minimize CPU involvement and focus solely on I/O. I also prepared six Linux ISOs, each around 1.5GB, and set the number of processes to six.
-* Hard drive: SATA Barracuda (5400 RPM)
+I removed all parsing functions and have set up the code so that each process will only do a file copy from one directory to another. This was to minimize CPU involvement and focus solely on I/O. I also prepared six Linux ISOs, each around 1.5GB, and set the number of processes to six. From the above results, I'm going to assume that scraper.py and multi_process_scraper.py with one process perform similarly, so I will not test scraper.py.
+
+##### Hard drive: SATA Barracuda (5400 RPM) #####
 * Multiprocess (1): 126.35425066947937 seconds
 * Multiprocess (6): 764.972131729126 seconds
 
-* Solid state drive: Samsung 850 PRO 256GB
+##### Solid state drive: Samsung 850 PRO 256GB #####
 * Multiprocess (1): 38.89297127723694 seconds
 * Multiprocess (6): 37.86269783973694 seconds
 
 Look at that performance drop for the HD! I increased the number of Linux ISOs to 24 (35.6GB) to see if the SSD would behave any differently. Spoilers: nothing changed.
-* Solid state drive: Samsung 850 PRO 256GB
+##### Solid state drive: Samsung 850 PRO 256GB #####
 * Multiprocess (1):  169.43121695518494 seconds
 * Multiprocess (24): 163.99551630020142 seconds
 
