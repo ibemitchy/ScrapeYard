@@ -1,4 +1,6 @@
+aiofiles
 aiohttp
 async_timeout
 beautifulsoup4
+HTMLParser
 requests
